@@ -12,9 +12,12 @@ $ ->
 	
 	setInterval(draw, 10)
 
-draw = ->
-	context.fillStyle = "black"
+clearGameArea = ->
+  context.fillStyle = "black"
 	context.fillRect 20, 20, canvas.width, canvas.height
+
+draw = ->
+	clearGameArea()
 	context.beginPath()
 	context.fillStyle = "white"
 	context.arc x, y, 10, 0, Math.PI*2, true 
@@ -22,3 +25,8 @@ draw = ->
 	context.fill()
 	x += 5
 	y += 0
+
+cannon = 
+  width: 10
+  height: 20
+  x: canvas.height
