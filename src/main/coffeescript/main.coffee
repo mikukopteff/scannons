@@ -20,5 +20,5 @@ draw = ->
 	context.arc x, y, 10, 0, Math.PI*2, true 
 	context.closePath()
 	context.fill()
-	x += 10
+	x += 5
 	y += 0
