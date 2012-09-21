@@ -13,8 +13,7 @@ $ ->
 	setInterval(draw, 10)
 	leftCannon = new Cannon(0 + Cannon.margin, canvas.height / 2)
 	rightCannon = new Cannon((canvas.width - Cannon.margin) - Cannon.width, canvas.height / 2)
-	ammo = new Ammo(leftCannon.x + Cannon.width / 2, leftCannon.y + Cannon.height / 2)
-	console.log ammo.x, ammo.y
+	ammo = leftCannon.createAmmo()
 
 drawBackground = ->
 	drawComponent((() -> context.fillRect 0, 0, canvas.width, canvas.height), "black")
@@ -42,6 +41,9 @@ class Cannon extends Movable
   @width: 30
   @height: 75
   @margin: 5
+  createAmmo: ->
+  	return new Ammo(this.x + Cannon.width / 2, this.y + Cannon.height / 2) 
+  
 
 class Ammo extends Movable
   constructor: (x, y) ->
