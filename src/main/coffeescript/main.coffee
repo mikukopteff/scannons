@@ -30,6 +30,9 @@ draw = ->
 	  drawComponent((() -> context.arc leftCannon.ammo.x, leftCannon.ammo.y, Ammo.size, 0, Math.PI*2, true), "white") 	
 	drawComponent((() -> context.fillRect leftCannon.x, leftCannon.y, Cannon.width, Cannon.height), "white")	
 	drawComponent((() -> context.fillRect rightCannon.x, rightCannon.y, Cannon.width, Cannon.height), "white")
+	drawComponent((() -> 
+	 context.font = "bold 20px Courier New"
+	 context.fillText "0 - 0", canvas.width / 2 - 30, 30), "white")
 	leftCannon.ammo.x += Ammo.speed if leftCannon.ammo?
 	rightCannon.ammo.x -= Ammo.speed if rightCannon.ammo?
 	
