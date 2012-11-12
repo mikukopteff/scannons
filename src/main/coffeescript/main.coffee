@@ -5,12 +5,13 @@ leftCannon = 0
 rightCannon = 0
 
 $ ->
-	canvas = document.getElementById "arena"
-	context = canvas.getContext "2d"
-	drawBackground()
-	setInterval(draw, 10)
-	leftCannon = new Cannon(0 + Cannon.margin, canvas.height / 2)
-	rightCannon = new Cannon((canvas.width - Cannon.margin) - Cannon.width, canvas.height / 2)
+    canvas = document.getElementById "arena"
+    context = canvas.getContext "2d"
+    drawBackground()
+    setInterval(draw, 10)
+    leftCannon = new Cannon(0 + Cannon.margin, canvas.height / 2)
+    rightCannon = new Cannon((canvas.width - Cannon.margin) - Cannon.width, canvas.height / 2)
+    connectServer()
 
 drawBackground = ->
 	drawComponent((() -> context.fillRect 0, 0, canvas.width, canvas.height), "black")
@@ -51,8 +52,29 @@ class Ammo extends Movable
     super(x, y)
   @size: 5
   @speed: 5
+
+
+connectServer = ->
+    window.WebSocket = window.WebSocket || window.MozWebSocket
+    connection = new WebSocket('ws://127.0.0.1:1337')
+    
+    connection.onopen = -> 
+        console.log "websocket open"
+
+    connection.onerror = (error) ->
+        console.log "error!"
+
+    connection.onmessage = (message) ->
+        try
+            console.log "on message"
+            json = JSON.parse message.data
+            leftCannon.shoot()
+            console.log json
+        catch e
+            console.log('This doesn\'t look like a valid JSON: ', message.data)
+
   
-# These have to be refactored to a separate class
+# These have to be refactored to a separate class, if they are even needed
 allKeyUps = $(document).asEventStream "keyup"
 allKeyDowns = $(document).asEventStream "keydown"
 	
@@ -73,9 +95,6 @@ keyState = (keyCode) ->
     keyDowns(keyCode).map(always(true)).merge(keyUps(keyCode).map(always(false))).toProperty false
     
 x = (y)->y
-
-$.get 'http://localhost:3000', (data) ->
-    $('body').append "Successfully got the page."
 
 keyState(38).filter(x).onValue () -> 
 	rightCannon.y -= Cannon.speed

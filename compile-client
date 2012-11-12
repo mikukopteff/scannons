@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+coffee -c -w -o target src/main/coffeescript/*.coffee
