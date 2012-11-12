@@ -29,7 +29,7 @@ draw = ->
 	if (leftCannon.ammo) 
 	  drawComponent((() -> context.arc leftCannon.ammo.x, leftCannon.ammo.y, Ammo.size, 0, Math.PI*2, true), "white") 	
 	drawComponent((() -> context.fillRect leftCannon.x, leftCannon.y, Cannon.width, Cannon.height), "white")	
-	drawComponent((() -> context.fillRect rightCannon.x, rightCannon.y, Cannon.width, Cannon.height), "white")
+	drawComponent((() -> context.fillRect rightCannon.x, rightCannon.y, Cannon.width, Cannon.height), "pink")
 	leftCannon.ammo.x += Ammo.speed if leftCannon.ammo?
 	rightCannon.ammo.x -= Ammo.speed if rightCannon.ammo?
 	
@@ -73,6 +73,9 @@ keyState = (keyCode) ->
     keyDowns(keyCode).map(always(true)).merge(keyUps(keyCode).map(always(false))).toProperty false
     
 x = (y)->y
+
+$.get 'http://localhost:3000', (data) ->
+    $('body').append "Successfully got the page."
 
 keyState(38).filter(x).onValue () -> 
 	rightCannon.y -= Cannon.speed
