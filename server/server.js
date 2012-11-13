@@ -1,5 +1,7 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
+var api = require('./api.js');
+api.http()
 
 var port = 1337;
 var gameConnection = function(){};
@@ -36,13 +38,3 @@ wsServer.on('request', function(request) {
     });
 });
 
-var express = require('express');
-var app = express();
-var httpPort = 8080;
-
-app.get('/hello', function(req, res){
-  res.send('Hello World');
-});
-
-console.log("listening to http at " + httpPort)
-app.listen(httpPort);
