@@ -10,7 +10,7 @@ var server = http.createServer(function(request, response) {
     response.end();
 });
 
-server.listen(port, function() { console.log("application started at port " + port) });
+server.listen(port, function() { console.log("listening to websocket accept " + port) });
 
 wsServer = new WebSocketServer({
     httpServer: server
@@ -35,3 +35,14 @@ wsServer.on('request', function(request) {
         console.log("Connection closed");
     });
 });
+
+var express = require('express');
+var app = express();
+var httpPort = 8080;
+
+app.get('/hello', function(req, res){
+  res.send('Hello World');
+});
+
+console.log("listening to http at " + httpPort)
+app.listen(httpPort);
