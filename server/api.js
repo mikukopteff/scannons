@@ -14,9 +14,11 @@ exports.httpAction = function(fun){
     performHttpAction = fun;
 }
 
-app.get('/shoot', function(req, res){
-        res.send('Api received a message\n');
-        console.log(performHttpAction);
+app.get('/:cannon/:operation', function(req, res){
         performHttpAction();
+        console.log('Http request received, cannon:' + req.params.cannon + ' does:' + req.params.operation);
+        res.send('Api received a message\n');
 });
+
+
 
