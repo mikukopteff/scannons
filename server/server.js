@@ -1,20 +1,8 @@
-var sendMessageToGame = function(){console.log('empty function')};
+'use strict';
 
-var _ = require('underscore')
-var express = require('express');
-var app = express();
-var httpPort = 8080;
-app.use('/public', express.static(_.first(__dirname, _.lastIndexOf(__dirname, '/')).join('') + '/target'));
-console.log(_.first(__dirname, _.lastIndexOf(__dirname, '/')).join('') + '/target');
-
-app.listen(httpPort);
-console.log("listening to http at " + httpPort)
-
-app.get('/shoot', function(req, res){
-    res.send('Api received a message\n');
-    console.log(sendMessageToGame);
-    sendMessageToGame();
-});
+var noClient = function(){console.log('No client connected - nowhere to push data')};
+var api = require('./api.js')
+api.httpAction(noClient);
 
 var websocketPort = 1337;
 var gameSocketServer = require('websocket').server;
@@ -25,11 +13,13 @@ gameSocketServer = new gameSocketServer({ httpServer: server });
 
 gameSocketServer.on('request', function(request) {
     var connection = request.accept(null, request.origin);
-    sendMessageToGame = function() {
+    var clientConnected = function() {
         console.log('writing data out to game');
         var json = JSON.stringify({ type:'message', data: 'shoot' });
         connection.sendUTF(json);
     }
+    console.log('browser client connected');
+    api.httpAction(clientConnected);
 
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
@@ -38,7 +28,7 @@ gameSocketServer.on('request', function(request) {
     });
 
     connection.on('close', function(connection) {
-        sendMessageToGame = function(){};
+        api.httpAction(noClient);
         console.log('Connection closed');
     });
 });
