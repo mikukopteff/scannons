@@ -13,9 +13,9 @@ gameSocketServer = new gameSocketServer({ httpServer: server });
 
 gameSocketServer.on('request', function(request) {
     var connection = request.accept(null, request.origin);
-    var clientConnected = function() {
+    var clientConnected = function(commands) {
         console.log('writing data out to game');
-        var json = JSON.stringify({ type:'message', data: 'shoot' });
+        var json = JSON.stringify(commands);
         connection.sendUTF(json);
     }
     console.log('browser client connected');
