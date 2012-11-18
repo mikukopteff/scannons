@@ -9,8 +9,8 @@ $ ->
     context = canvas.getContext "2d"
     drawBackground()
     setInterval(draw, 10)
-    leftCannon = new Cannon(0 + Cannon.margin, canvas.height / 2)
-    rightCannon = new Cannon((canvas.width - Cannon.margin) - Cannon.width, canvas.height / 2)
+    leftCannon = new Cannon(0 + Cannon.margin, canvas.height / 2, "chewie")
+    rightCannon = new Cannon((canvas.width - Cannon.margin) - Cannon.width, canvas.height / 2, "luke")
     connectServer()
 
 drawBackground = ->
@@ -38,7 +38,7 @@ class Movable
   constructor: (@x, @y) ->
 
 class Cannon extends Movable
-  constructor: (x, y) ->
+  constructor: (x, y, @name) ->
     super(x, y)
   @width: 30
   @height: 75
@@ -62,17 +62,31 @@ connectServer = ->
         console.log "websocket open"
 
     connection.onerror = (error) ->
-        console.log "error!"
+        console.log "error:" + error
 
     connection.onmessage = (message) ->
         try
-            console.log "on message"
+            console.log "message received"
             json = JSON.parse message.data
-            leftCannon.shoot()
             console.log json
         catch e
-            console.log('This doesn\'t look like a valid JSON: ', message.data)
+            console.log('Not a valid command: ', message.data)
+        performCommandAction json
 
+performCommandAction = (command) ->
+  switch (command.operation)
+    when "shoot" then pickCannon(command.cannon).shoot()
+    when "move" then moveCannon(command)
+    else throw new Error("Illegal operation from server" + command.operation)
+
+pickCannon = (name) ->
+  if (name is leftCannon.name) then leftCannon else if (name is rightCannon.name) then rightCannon else throw new Error("Bad cannon name")
+
+moveCannon = (command) -> 
+  switch (command.direction)
+    when "n" then pickCannon(command.cannon).y -= Cannon.speed
+    when "s" then pickCannon(command.cannon).y += Cannon.speed
+    else throw new Error("Illegl direction for cannon")
   
 # These have to be refactored to a separate class, if they are even needed
 allKeyUps = $(document).asEventStream "keyup"
