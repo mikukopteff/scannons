@@ -16,13 +16,13 @@ exports.httpAction = function(fun) {
 }
 
 app.get('/move/:cannon/:direction/:amount', function(req, res) {
-        console.log('Http request, cannon:' + req.params.cannon + ' moves ' + req.params.amount + ' ' +req.params.direction);
-        performHttpAction({operation: 'move', cannon: req.params.cannon, amount: req.params.amount, direction: req.params.direction});
-        res.send('Api received a message\n');
+    console.log('Http request, cannon:' + req.params.cannon + ' moves ' + req.params.amount + ' ' +req.params.direction);
+    performHttpAction({operation: 'move', cannon: req.params.cannon, amount: req.params.amount, direction: req.params.direction});
+    res.send('Api received a message\n');
 });
 
 app.get('/shoot/:cannon', function(req, res) {
-        console.log('Http request shoot, cannon:' + req.params.cannon);
-        performHttpAction({operation: 'shoot', cannon: req.params.cannon});
-        res.send('Api received a message\n');
+    console.log('Http request shoot, cannon:' + req.params.cannon);
+    performHttpAction({operation: 'shoot', cannon: req.params.cannon});
+    res.send('Api received a message\n');
 });
