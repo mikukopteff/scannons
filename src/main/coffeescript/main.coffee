@@ -42,7 +42,6 @@ updateCannonMovement = ->
 
 updateSingleCannonMovement = (cannon) ->
   if cannon.movesLeftInPixels > 0
-    console.log ("before: " + cannon.movesLeftInPixels)
     switch (cannon.direction)
       when "s" then cannon.y += Cannon.speed
       when "n" then cannon.y -= Cannon.speed
