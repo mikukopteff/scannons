@@ -4,13 +4,12 @@ canvas = 0
 leftCannon = 0
 rightCannon = 0
 fps = 50
-screenUpdateFrequency = 1000 / fps
 
 $ ->
     canvas = document.getElementById "arena"
     context = canvas.getContext "2d"
     drawBackground()
-    setInterval(draw, screenUpdateFrequency)
+    setInterval(draw, 1000 / fps)
     leftCannon = new Cannon(0 + Cannon.margin, canvas.height / 2, "chewie")
     rightCannon = new Cannon((canvas.width - Cannon.margin) - Cannon.width, canvas.height / 2, "luke")
     connectServer()
