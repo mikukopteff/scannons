@@ -10,4 +10,4 @@ API currently supports shoot and move commands in the following way:
 Cannon names are `luke` and `chewie`.
 Directions are `N` and  `S` as in North and South. 
 
-To continuesly compile the client code run `./compile-client` and to test out the server run `node server.js` in the `{APP_ROOT`}/server` -folder
+To continuesly compile the client code run `./compile-client` and to test out the server run `node server.js` in the `{APP_ROOT}/server` -folder
