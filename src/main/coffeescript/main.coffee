@@ -3,12 +3,14 @@ context = 0
 canvas = 0
 leftCannon = 0
 rightCannon = 0
+fps = 50
+screenUpdateFrequency = 1000 / fps
 
 $ ->
     canvas = document.getElementById "arena"
     context = canvas.getContext "2d"
     drawBackground()
-    setInterval(draw, 10)
+    setInterval(draw, screenUpdateFrequency)
     leftCannon = new Cannon(0 + Cannon.margin, canvas.height / 2, "chewie")
     rightCannon = new Cannon((canvas.width - Cannon.margin) - Cannon.width, canvas.height / 2, "luke")
     connectServer()
@@ -29,10 +31,28 @@ draw = ->
 	  drawComponent((() -> context.arc rightCannon.ammo.x, rightCannon.ammo.y, Ammo.size, 0, Math.PI*2, true), "white")
 	if (leftCannon.ammo) 
 	  drawComponent((() -> context.arc leftCannon.ammo.x, leftCannon.ammo.y, Ammo.size, 0, Math.PI*2, true), "white") 	
-	drawComponent((() -> context.fillRect leftCannon.x, leftCannon.y, Cannon.width, Cannon.height), "white")	
-	drawComponent((() -> context.fillRect rightCannon.x, rightCannon.y, Cannon.width, Cannon.height), "pink")
-	leftCannon.ammo.x += Ammo.speed if leftCannon.ammo?
-	rightCannon.ammo.x -= Ammo.speed if rightCannon.ammo?
+  drawComponent((() -> context.fillRect leftCannon.x, leftCannon.y, Cannon.width, Cannon.height), "white")	
+  drawComponent((() -> context.fillRect rightCannon.x, rightCannon.y, Cannon.width, Cannon.height), "pink")
+  updateShots()
+  updateCannonMovement()
+
+updateCannonMovement = ->
+  updateSingleCannonMovement(leftCannon)
+  updateSingleCannonMovement(rightCannon)
+
+updateSingleCannonMovement = (cannon) ->
+  if cannon.movesLeftInPixels > 0
+    console.log ("before: " + cannon.movesLeftInPixels)
+    switch (cannon.direction)
+      when "s" then cannon.y += Cannon.speed
+      when "n" then cannon.y -= Cannon.speed
+      else throw new Error("Illegal direction for Cannon:" + cannon.direction)
+    cannon.move(cannon.direction, cannon.movesLeftInPixels - Cannon.speed)
+
+updateShots = ->
+  leftCannon.ammo.x += Ammo.speed if leftCannon.ammo?
+  rightCannon.ammo.x -= Ammo.speed if rightCannon.ammo?
+
 	
 class Movable
   constructor: (@x, @y) ->
@@ -43,15 +63,18 @@ class Cannon extends Movable
   @width: 30
   @height: 75
   @margin: 5
-  @speed: 10
+  @speed: 3
   shoot: ->
-  	@ammo =  new Ammo(this.x + Cannon.width / 2, this.y + Cannon.height / 2) 
+  	@ammo =  new Ammo(this.x + Cannon.width / 2, this.y + Cannon.height / 2)
+  move: (direction, amount) ->
+    @movesLeftInPixels = amount
+    @direction = direction
 
 class Ammo extends Movable
   constructor: (x, y) ->
     super(x, y)
   @size: 5
-  @speed: 5
+  @speed: 10
 
 
 connectServer = ->
@@ -76,17 +99,11 @@ connectServer = ->
 performCommandAction = (command) ->
   switch (command.operation)
     when "shoot" then pickCannon(command.cannon).shoot()
-    when "move" then moveCannon(command)
+    when "move" then pickCannon(command.cannon).move(command.direction, command.amount)
     else throw new Error("Illegal operation from server" + command.operation)
 
 pickCannon = (name) ->
   if (name is leftCannon.name) then leftCannon else if (name is rightCannon.name) then rightCannon else throw new Error("Bad cannon name")
-
-moveCannon = (command) -> 
-  switch (command.direction)
-    when "n" then pickCannon(command.cannon).y -= Cannon.speed
-    when "s" then pickCannon(command.cannon).y += Cannon.speed
-    else throw new Error("Illegl direction for cannon")
   
 # These have to be refactored to a separate class, if they are even needed
 allKeyUps = $(document).asEventStream "keyup"
