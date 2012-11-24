@@ -16,7 +16,7 @@ $ ->
     connectServer()
 
 drawBackground = ->
-	drawComponent((() -> context.fillRect 0, 0, canvas.width, canvas.height), "black")
+	drawComponent((() -> context.fillRect 0, 0, canvas.width, canvas.height), "white")
 
 drawComponent = (fun, color) ->
 	context.beginPath()
@@ -28,13 +28,20 @@ drawComponent = (fun, color) ->
 draw = ->
 	drawBackground()
 	if (rightCannon.ammo) 
-	  drawComponent((() -> context.arc rightCannon.ammo.x, rightCannon.ammo.y, Ammo.size, 0, Math.PI * 2, true), "white")
+	  drawComponent((() -> context.arc rightCannon.ammo.x, rightCannon.ammo.y, Ammo.size, 0, Math.PI * 2, true), "red")
 	if (leftCannon.ammo) 
-	  drawComponent((() -> context.arc leftCannon.ammo.x, leftCannon.ammo.y, Ammo.size, 0, Math.PI * 2, true), "white") 	
-  drawComponent((() -> context.fillRect leftCannon.x, leftCannon.y, Cannon.width, Cannon.height), "white")	
-  drawComponent((() -> context.fillRect rightCannon.x, rightCannon.y, Cannon.width, Cannon.height), "pink")
+	  drawComponent((() -> context.arc leftCannon.ammo.x, leftCannon.ammo.y, Ammo.size, 0, Math.PI * 2, true), "red") 	
+  drawComponent((() -> context.fillRect leftCannon.x, leftCannon.y, Cannon.width, Cannon.height), "black")	
+  drawComponent((() -> context.fillRect rightCannon.x, rightCannon.y, Cannon.width, Cannon.height), "black")
   updateShots()
   updateCannonMovement()
+  #log()
+
+log = ->
+  console.log "Left Cannon x:" + leftCannon.x + " y:" + leftCannon.y
+  (console.log " Left Cannon ammo:" + leftCannon.ammo.x + " y:" + leftCannon.ammo.y) if leftCannon.ammo?
+  console.log "Right Cannon x:" + rightCannon.x + " y:" + rightCannon.y 
+  (console.log "Rigth Cannon ammo:" + rightCannon.ammo.x + " y:" + rightCannon.ammo.y) if rightCannon.ammo?
 
 updateCannonMovement = ->
   updateSingleCannonMovement(leftCannon)
@@ -64,10 +71,7 @@ updateLeftCannonAmmo = ->
   if (leftCannon.ammo.x < canvas.width) then leftCannon.ammo.x += Ammo.speed else leftCannon.ammo = null
 
 updateRightCannonAmmo = ->
-  console.log " x "+ rightCannon.ammo.x 
-  console.log " ammo " + rightCannon.ammo
-  if (rightCannon.ammo.x > 0) then rightCannon.ammo.x -= Ammo.speed; console.log "pitäis liikuttaaa" else rightCannon.ammo  = null
-  console.log rightCannon.ammo
+  if (rightCannon.ammo.x > 0) then rightCannon.ammo.x -= Ammo.speed else rightCannon.ammo  = null
 	
 class Movable
   constructor: (@x, @y) ->
