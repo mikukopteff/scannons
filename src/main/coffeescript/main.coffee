@@ -56,11 +56,18 @@ moveCannonDown = (cannon) ->
 
 moveCannonUp = (cannon) -> if ((cannon.y) < (0 + Cannon.speed)) then cannon.y -= cannon.y else cannon.y -= Cannon.speed
 
-
 updateShots = ->
-  leftCannon.ammo.x += Ammo.speed if leftCannon.ammo?
-  rightCannon.ammo.x -= Ammo.speed if rightCannon.ammo?
+  updateLeftCannonAmmo() if leftCannon.ammo?
+  updateRightCannonAmmo() if rightCannon.ammo?
 
+updateLeftCannonAmmo = ->
+  if (leftCannon.ammo.x < canvas.width) then leftCannon.ammo.x += Ammo.speed else leftCannon.ammo = null
+
+updateRightCannonAmmo = ->
+  console.log " x "+ rightCannon.ammo.x 
+  console.log " ammo " + rightCannon.ammo
+  if (rightCannon.ammo.x > 0) then rightCannon.ammo.x -= Ammo.speed; console.log "pitäis liikuttaaa" else rightCannon.ammo  = null
+  console.log rightCannon.ammo
 	
 class Movable
   constructor: (@x, @y) ->
@@ -73,7 +80,7 @@ class Cannon extends Movable
   @margin: 5
   @speed: 3
   shoot: ->
-  	@ammo =  new Ammo(this.x + Cannon.width / 2, this.y + Cannon.height / 2)
+  	@ammo = new Ammo(this.x + Cannon.width / 2, this.y + Cannon.height / 2) if not this.ammo?
   move: (direction, amount) ->
     @movesLeftInPixels = amount
     @direction = direction
@@ -83,7 +90,6 @@ class Ammo extends Movable
     super(x, y)
   @size: 5
   @speed: 10
-
 
 connectServer = ->
     window.WebSocket = window.WebSocket || window.MozWebSocket
@@ -108,7 +114,7 @@ performCommandAction = (command) ->
   switch (command.operation)
     when "shoot" then pickCannon(command.cannon).shoot()
     when "move" then pickCannon(command.cannon).move(command.direction, command.amount)
-    else throw new Error("Illegal operation from server" + command.operation)
+    else throw new Error("Illegal operation from server:" + command.operation)
 
 pickCannon = (name) ->
   if (name is leftCannon.name) then leftCannon else if (name is rightCannon.name) then rightCannon else throw new Error("Bad cannon name")
