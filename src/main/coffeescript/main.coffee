@@ -102,8 +102,9 @@ performCommandAction = (command) ->
 
 pickCannon = (name) ->
   if (name is leftCannon.name) then leftCannon else if (name is rightCannon.name) then rightCannon else throw new Error("Bad cannon name")
+
   
-# These have to be refactored to a separate class, if they are even needed
+# These have to be refactored to a separate module, if they are even needed
 allKeyUps = $(document).asEventStream "keyup"
 allKeyDowns = $(document).asEventStream "keydown"
 	
@@ -126,16 +127,16 @@ keyState = (keyCode) ->
 x = (y)->y
 
 keyState(38).filter(x).onValue () -> 
-	rightCannon.y -= Cannon.speed
+	rightCannon.move("n", 10)
 	
 keyState(40).filter(x).onValue () -> 
-	rightCannon.y += Cannon.speed
+	rightCannon.move("s", 10)
 
 keyState(65).filter(x).onValue () -> 
-	leftCannon.y -= Cannon.speed
+	leftCannon.move("n", 10)
 	
 keyState(90).filter(x).onValue () -> 
-	leftCannon.y += Cannon.speed
+	leftCannon.move("s", 10)
 	
 keyState(32).filter(x).onValue () ->
 	rightCannon.shoot()
