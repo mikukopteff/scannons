@@ -7,6 +7,7 @@ fps = 50
 
 $ ->
     canvas = document.getElementById "arena"
+    canvas.style.border = "green 3px solid"
     context = canvas.getContext "2d"
     drawBackground()
     setInterval(draw, 1000 / fps)
@@ -27,9 +28,9 @@ drawComponent = (fun, color) ->
 draw = ->
 	drawBackground()
 	if (rightCannon.ammo) 
-	  drawComponent((() -> context.arc rightCannon.ammo.x, rightCannon.ammo.y, Ammo.size, 0, Math.PI*2, true), "white")
+	  drawComponent((() -> context.arc rightCannon.ammo.x, rightCannon.ammo.y, Ammo.size, 0, Math.PI * 2, true), "white")
 	if (leftCannon.ammo) 
-	  drawComponent((() -> context.arc leftCannon.ammo.x, leftCannon.ammo.y, Ammo.size, 0, Math.PI*2, true), "white") 	
+	  drawComponent((() -> context.arc leftCannon.ammo.x, leftCannon.ammo.y, Ammo.size, 0, Math.PI * 2, true), "white") 	
   drawComponent((() -> context.fillRect leftCannon.x, leftCannon.y, Cannon.width, Cannon.height), "white")	
   drawComponent((() -> context.fillRect rightCannon.x, rightCannon.y, Cannon.width, Cannon.height), "pink")
   updateShots()
@@ -42,10 +43,19 @@ updateCannonMovement = ->
 updateSingleCannonMovement = (cannon) ->
   if cannon.movesLeftInPixels > 0
     switch (cannon.direction)
-      when "s" then cannon.y += Cannon.speed
-      when "n" then cannon.y -= Cannon.speed
+      when "s" then moveCannonDown(cannon)
+      when "n" then moveCannonUp(cannon)
       else throw new Error("Illegal direction for Cannon:" + cannon.direction)
     cannon.move(cannon.direction, cannon.movesLeftInPixels - Cannon.speed)
+
+moveCannonDown = (cannon) ->
+  if ((cannon.y + Cannon.height) > (canvas.height - Cannon.speed)) 
+    cannon.y += (canvas.height - (cannon.y + Cannon.height))
+  else 
+    cannon.y += Cannon.speed
+
+moveCannonUp = (cannon) -> if ((cannon.y) < (0 + Cannon.speed)) then cannon.y -= cannon.y else cannon.y -= Cannon.speed
+
 
 updateShots = ->
   leftCannon.ammo.x += Ammo.speed if leftCannon.ammo?
@@ -144,7 +154,5 @@ keyState(32).filter(x).onValue () ->
 keyState(88).filter(x).onValue () ->
 	leftCannon.shoot()
 	
-$(document).asEventStream('keydown').subscribe (evt) ->
-	console.log "Debugging key events" + evt.value.keyCode	
 
   
