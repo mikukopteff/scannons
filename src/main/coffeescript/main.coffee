@@ -69,10 +69,21 @@ updateShots = ->
 
 updateLeftCannonAmmo = ->
   if (leftCannon.ammo.x < canvas.width) then leftCannon.ammo.x += Ammo.speed else leftCannon.ammo = null
+  if hitTesting(leftCannon.ammo, rightCannon) then console.log "RIGHT CANNON HIT"; leftCannon.ammo = null
+
 
 updateRightCannonAmmo = ->
   if (rightCannon.ammo.x > 0) then rightCannon.ammo.x -= Ammo.speed else rightCannon.ammo  = null
+  if hitTesting(rightCannon.ammo, leftCannon) then console.log ("LEFT CANNON HIT"); rightCannon.ammo = null
 	
+hitTesting = (ammo, cannon)->
+  if ammo?
+    if ((ammo.x + Ammo.size / 2 >= cannon.x) and (ammo.x <= cannon.x + Cannon.width) and (ammo.y + Ammo.size / 2 >= cannon.y) and
+        (ammo.y <= cannon.y + Cannon.height))
+      return true
+  else 
+    return false
+
 class Movable
   constructor: (@x, @y) ->
 
