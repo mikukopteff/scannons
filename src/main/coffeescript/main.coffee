@@ -1,4 +1,3 @@
-
 context = 0
 canvas = 0
 leftCannon = 0
@@ -12,8 +11,10 @@ $ ->
     drawBackground()
     setInterval(draw, 1000 / fps)
     leftCannon = new Cannon(0 + Cannon.margin, canvas.height / 2, "chewie")
+    window.main.leftCannon = leftCannon
     rightCannon = new Cannon((canvas.width - Cannon.margin) - Cannon.width, canvas.height / 2, "luke")
-    connectServer()
+    window.main.rightCannon = rightCannon
+    window.websocket.connectServer()
 
 drawBackground = ->
 	drawComponent((() -> context.fillRect 0, 0, canvas.width, canvas.height), "white")
@@ -106,74 +107,9 @@ class Ammo extends Movable
   @size: 5
   @speed: 10
 
-connectServer = ->
-    window.WebSocket = window.WebSocket || window.MozWebSocket
-    connection = new WebSocket('ws://127.0.0.1:1337')
-    
-    connection.onopen = -> 
-        console.log "websocket open"
-
-    connection.onerror = (error) ->
-        console.log "error:" + error
-
-    connection.onmessage = (message) ->
-        try
-            console.log "message received"
-            json = JSON.parse message.data
-            console.log json
-        catch e
-            console.log('Not a valid command: ', message.data)
-        performCommandAction json
-
-performCommandAction = (command) ->
-  switch (command.operation)
-    when "shoot" then pickCannon(command.cannon).shoot()
-    when "move" then pickCannon(command.cannon).move(command.direction, command.amount)
-    else throw new Error("Illegal operation from server:" + command.operation)
 
 pickCannon = (name) ->
   if (name is leftCannon.name) then leftCannon else if (name is rightCannon.name) then rightCannon else throw new Error("Bad cannon name")
-
-  
-# These have to be refactored to a separate module, if they are even needed
-allKeyUps = $(document).asEventStream "keyup"
-allKeyDowns = $(document).asEventStream "keydown"
-	
-always = (value) ->
-    (_) ->
-      value
-      
-keyCodeIs = (keyCode) ->
-    (event) ->
-      event.keyCode is keyCode
-      
-keyUps = (keyCode) ->
-    allKeyUps.filter keyCodeIs(keyCode)
-keyDowns = (keyCode) ->
-    allKeyDowns.filter keyCodeIs(keyCode)
-    
-keyState = (keyCode) ->
-    keyDowns(keyCode).map(always(true)).merge(keyUps(keyCode).map(always(false))).toProperty false
-    
-x = (y)->y
-
-keyState(38).filter(x).onValue () -> 
-	rightCannon.move("n", 10)
-	
-keyState(40).filter(x).onValue () -> 
-	rightCannon.move("s", 10)
-
-keyState(65).filter(x).onValue () -> 
-	leftCannon.move("n", 10)
-	
-keyState(90).filter(x).onValue () -> 
-	leftCannon.move("s", 10)
-	
-keyState(32).filter(x).onValue () ->
-	rightCannon.shoot()
-
-keyState(88).filter(x).onValue () ->
-	leftCannon.shoot()
-	
-
-  
+ 	
+window.main = if not window.main? then new Object
+window.main.pickCannon = pickCannon
