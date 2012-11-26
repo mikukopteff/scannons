@@ -38,7 +38,7 @@ draw = ->
 
 log = ->
   console.log "Left Cannon x:" + leftCannon.x + " y:" + leftCannon.y
-  (console.log " Left Cannon ammo:" + leftCannon.ammo.x + " y:" + leftCannon.ammo.y) if leftCannon.ammo?
+  (console.log "Left Cannon ammo:" + leftCannon.ammo.x + " y:" + leftCannon.ammo.y) if leftCannon.ammo?
   console.log "Right Cannon x:" + rightCannon.x + " y:" + rightCannon.y 
   (console.log "Rigth Cannon ammo:" + rightCannon.ammo.x + " y:" + rightCannon.ammo.y) if rightCannon.ammo?
 
@@ -104,7 +104,6 @@ class Ammo extends Movable
     super(x, y)
   @size: 5
   @speed: 10
-
 
 pickCannon = (name) ->
   if (name is leftCannon.name) then leftCannon else if (name is rightCannon.name) then rightCannon else throw new Error("Bad cannon name")
