@@ -11,9 +11,7 @@ $ ->
     drawBackground()
     setInterval(draw, 1000 / fps)
     leftCannon = new Cannon(0 + Cannon.margin, canvas.height / 2, "chewie")
-    window.main.leftCannon = leftCannon
     rightCannon = new Cannon((canvas.width - Cannon.margin) - Cannon.width, canvas.height / 2, "luke")
-    window.main.rightCannon = rightCannon
     window.websocket.connectServer()
 
 drawBackground = ->
