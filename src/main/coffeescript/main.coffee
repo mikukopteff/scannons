@@ -118,7 +118,7 @@ class Ammo extends Movable
   constructor: (x, y) ->
     super(x, y)
   @size: 5
-  @speed: 10
+  @speed: 20
 
 pickCannon = (name) ->
   if (name is leftCannon.name) then leftCannon else if (name is rightCannon.name) then rightCannon else throw new Error("Bad cannon name")
