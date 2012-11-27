@@ -20,20 +20,20 @@ keyState = (keyCode) ->
 x = (y)->y
 
 keyState(38).filter(x).onValue () -> 
-    window.main.pickCannon("luke").move("n", 10)
+    window.main.pickCannon(window.main.rightPlayer).move("n", 10)
     
 keyState(40).filter(x).onValue () -> 
-    window.main.pickCannon("luke").move("s", 10)
+    window.main.pickCannon(window.main.rightPlayer).move("s", 10)
 
 keyState(65).filter(x).onValue () -> 
-    window.main.pickCannon("chewie").move("n", 10)
+    window.main.pickCannon(window.main.leftPlayer).move("n", 10)
     
 keyState(90).filter(x).onValue () -> 
-    window.main.pickCannon("chewie").move("s", 10)
+    window.main.pickCannon(window.main.leftPlayer).move("s", 10)
     
 keyState(32).filter(x).onValue () ->
-    window.main.pickCannon("luke").shoot()
+    window.main.pickCannon(window.main.rightPlayer).shoot()
 
 keyState(88).filter(x).onValue () ->
-    window.main.pickCannon("chewie").shoot()
+    window.main.pickCannon(window.main.leftPlayer).shoot()
 

@@ -3,6 +3,7 @@ canvas = 0
 leftCannon = 0
 rightCannon = 0
 fps = 50
+round = 0
 
 $ ->
     canvas = document.getElementById "arena"
@@ -10,8 +11,9 @@ $ ->
     context = canvas.getContext "2d"
     drawBackground()
     setInterval(draw, 1000 / fps)
-    leftCannon = new Cannon(0 + Cannon.margin, canvas.height / 2, "chewie")
-    rightCannon = new Cannon((canvas.width - Cannon.margin) - Cannon.width, canvas.height / 2, "luke")
+    leftCannon = new Cannon(0 + Cannon.margin, canvas.height / 2, window.main.leftPlayer)
+    rightCannon = new Cannon((canvas.width - Cannon.margin) - Cannon.width, canvas.height / 2, window.main.rightPlayer)
+    drawScoreboard()
     window.websocket.connectServer()
 
 drawBackground = ->
@@ -35,6 +37,12 @@ draw = ->
   updateShots()
   updateCannonMovement()
   #log()
+
+drawScoreboard = ->
+    $("#right .player").text(window.main.rightPlayer)
+    $("#right .score").text(0)
+    $("#left .score").text(0)
+    $("#left .player").text(window.main.leftPlayer)  
 
 log = ->
   console.log "Left Cannon x:" + leftCannon.x + " y:" + leftCannon.y
@@ -68,13 +76,20 @@ updateShots = ->
 
 updateLeftCannonAmmo = ->
   if (leftCannon.ammo.x < canvas.width) then leftCannon.ammo.x += Ammo.speed else leftCannon.ammo = null
-  if hitTesting(leftCannon.ammo, rightCannon) then console.log "RIGHT CANNON HIT"; leftCannon.ammo = null
+  if hitTesting(leftCannon.ammo, rightCannon) then console.log "RIGHT CANNON HIT"; updateLeftScore(); leftCannon.ammo = null
 
 
 updateRightCannonAmmo = ->
   if (rightCannon.ammo.x > 0) then rightCannon.ammo.x -= Ammo.speed else rightCannon.ammo  = null
-  if hitTesting(rightCannon.ammo, leftCannon) then console.log ("LEFT CANNON HIT"); rightCannon.ammo = null
+  if hitTesting(rightCannon.ammo, leftCannon) then console.log ("LEFT CANNON HIT"); updateRightScore(); rightCannon.ammo = null
 	
+updateLeftScore = ->
+    $("#left .score").text(parseInt($("#left .score").text()) + 1)
+#copy paste because coffeescript compiler has a bug
+updateRightScore = ->
+    $("#right .score").text(parseInt($("#right .score").text()) + 1)
+    
+
 hitTesting = (ammo, cannon)->
   if ammo?
     if ((ammo.x + Ammo.size / 2 >= cannon.x) and (ammo.x <= cannon.x + Cannon.width) and (ammo.y + Ammo.size / 2 >= cannon.y) and
@@ -110,3 +125,5 @@ pickCannon = (name) ->
  	
 window.main = if not window.main? then new Object
 window.main.pickCannon = pickCannon
+window.main.leftPlayer = "chewie"
+window.main.rightPlayer = "luke"
