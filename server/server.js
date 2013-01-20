@@ -11,9 +11,11 @@ var server = http.createServer(function(){});
 server.listen(websocketPort, function() { console.log('listening to websocket accept ' + websocketPort) });
 gameSocketServer = new gameSocketServer({ httpServer: server });
 
-var gameState = {empty:"jee"}
+var gameState = {};
 
-exports.status = gameState;
+exports.status = function() {
+    return gameState;
+}
 
 gameSocketServer.on('request', function(request) {
     var connection = request.accept(null, request.origin);
@@ -28,7 +30,6 @@ gameSocketServer.on('request', function(request) {
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
             console.log('message received:' + message);
-            console.log (message.utf8Data)
             gameState = JSON.parse(message.utf8Data);
         }
     });
