@@ -127,3 +127,4 @@ window.main = if not window.main? then new Object
 window.main.pickCannon = pickCannon
 window.main.leftPlayer = "chewie"
 window.main.rightPlayer = "luke"
+window.main.arena = { width: canvas.width , height: canvas.height }

@@ -16,3 +16,9 @@
     width: 120px;
     display: inline-block;
 }
+#statusbar {
+  width: 800px;
+  font-size: 14px;
+  font-family: "Courier new", Courier;
+  border: black 2px solid
+}
