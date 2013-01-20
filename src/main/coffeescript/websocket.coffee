@@ -5,7 +5,7 @@ connectServer = ->
     
     connection.onopen = -> 
         console.log "websocket open"
-        $("#statusbar").text("connected to server")
+        $("#statusbar").text("Connected to server")
 
     connection.onerror = (error) ->
         console.log "error:" + error
@@ -18,7 +18,8 @@ connectServer = ->
         catch e
             console.log('Not a valid command: ', message.data)
         performCommandAction json
-        connection.sendUTF (JSON.stringify createStatusObject) 
+        connection.send JSON.stringify createStatusObject()
+        $("#statusbar").text(JSON.stringify json)
 
 performCommandAction = (command) ->
   switch (command.operation)
@@ -27,9 +28,8 @@ performCommandAction = (command) ->
     else throw new Error("Illegal operation from server:" + command.operation)
 
 createStatusObject = ->
-    {blaa:status}
-    #{ leftCannon: window.main.pickCannon(window.main.leftPlayer), rightCannon: window.main,pickCannon(window.main.rightPlayer),
-    #                     "arena": window.main.arena }
+    {leftCannon: window.main.pickCannon(window.main.leftPlayer), 
+    rightCannon: window.main.pickCannon(window.main.rightPlayer), arena: window.main.arena}
 
 window.websocket = if not window.websocket? then new Object
 window.websocket.connectServer = connectServer
